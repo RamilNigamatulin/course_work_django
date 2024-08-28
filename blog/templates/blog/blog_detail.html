@@ -1,0 +1,19 @@
+{% extends 'mailing/home.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+    <div class="col">
+        <div class="card shadow-sm">
+            <img src="{{ object.preview | media_filter }}" class="fixed-size-image">
+            <div class="card-body">
+                <p class="card-text">Название блога: {{ object.title }}</p>
+                <p class="card-text">Содержимое блога: {{ object.content}}</p>
+                <p class="btn">Просмотры: {{ object.views_counter }}.</p>
+            </div>
+            <div class="btn-group">
+                <a class="btn btn-primary" href="{% url 'blog:list' %}" role="button">Назад</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

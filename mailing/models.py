@@ -43,7 +43,7 @@ class Client(models.Model):
 
 
 class Mailing(models.Model):
-    """настройка расслыки сообщений"""
+    """настройка рассылки сообщений"""
 
     start_date = models.DateTimeField(
         verbose_name='Дата и время первой отправки рассылки',
@@ -95,6 +95,7 @@ class Message(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Рассылка',
         help_text='Выберите статус рассылки',
+        **NULLABLE,
     )
     clients = models.ManyToManyField(
         Client,

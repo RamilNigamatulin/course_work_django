@@ -1,2 +1,12 @@
 Django==4.2
 pytz==2024.1
+psycopg2-binary==2.9.9
+pillow==10.4.0
+ipython==8.26.0
+pytils==0.4.1
+django-phonenumber-field==8.0.0
+#django-debug-toolbar
+django-cleanup==8.1.0
+phonenumbers==8.13.44
+redis==5.0.8
+python-dotenv==1.0.1
