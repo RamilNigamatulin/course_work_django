@@ -168,6 +168,12 @@ class Attempt(models.Model):
         verbose_name='Ответ почтового сервера',
         help_text='Ответ почтового сервера, если он был',
     )
+    owner = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.SET_NULL,
+        **NULLABLE,
+    )
 
     class Meta:
         verbose_name = 'Попытка рассылки'
