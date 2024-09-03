@@ -1,0 +1,13 @@
+{% extends 'mailing/home.html' %}
+{% block content %}
+<body>
+    <h1>Список зарегистрированных пользователей</h1>
+    <ul>
+        {% for user in users %}
+            <li>{{ user.email }} -
+                <a href="{% url 'users:toggle_active_user' user.pk %}">{% if user.is_active %}Deactivate{% else %}Activate{% endif %}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+{% endblock %}

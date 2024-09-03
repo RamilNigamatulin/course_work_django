@@ -1,6 +1,6 @@
 import secrets
 
-from django.views.generic import CreateView, FormView, UpdateView
+from django.views.generic import CreateView, FormView, UpdateView, ListView
 from users.models import User
 from users.forms import UserRegisterForm, PasswordResetForm, UserProfileForm
 from django.urls import reverse_lazy
@@ -11,7 +11,7 @@ from django.urls import reverse
 import string
 import random
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 class UserCreateView(CreateView):
@@ -81,3 +81,32 @@ class ProfileView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+
+class ToggleActiveUserView(UserPassesTestMixin, UpdateView):
+    model = User
+    fields = ()
+    template_name = 'users/toggle_active_user.html'
+    success_url = reverse_lazy('users:manage_users')
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='manager').exists()
+
+    def form_valid(self, form):
+        user = self.get_object()
+        if not user.is_superuser:
+            user.is_active = not user.is_active
+            user.save()
+        return super().form_valid(form)
+
+
+class ManageUsersView(UserPassesTestMixin, ListView):
+    model = User
+    template_name = 'users/manage_users.html'
+    context_object_name = 'users'
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='manager').exists()
+
+    def get_queryset(self):
+        return User.objects.exclude(is_superuser=True)
