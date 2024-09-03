@@ -1,0 +1,72 @@
+[
+  {
+    "model": "blog.blog",
+    "pk": 1,
+    "fields": {
+      "title": "пост №1",
+      "slug": "post-1",
+      "content": "текст поста №1",
+      "preview": "photo/blog/cat_857EP01.jpg",
+      "created_date": "2024-09-02T18:33:21.018Z",
+      "published": true,
+      "views_counter": 1,
+      "owner": null
+    }
+  },
+  {
+    "model": "blog.blog",
+    "pk": 2,
+    "fields": {
+      "title": "пост №2",
+      "slug": "post-2",
+      "content": "текст поста №2",
+      "preview": "photo/blog/dog_2EhM0jP.jpg",
+      "created_date": "2024-09-02T18:33:43.813Z",
+      "published": true,
+      "views_counter": 0,
+      "owner": null
+    }
+  },
+  {
+    "model": "blog.blog",
+    "pk": 3,
+    "fields": {
+      "title": "пост №3",
+      "slug": "post-3",
+      "content": "текст поста №3",
+      "preview": "photo/blog/rabbit_ZUrJuZu.jpg",
+      "created_date": "2024-09-02T18:34:06.651Z",
+      "published": true,
+      "views_counter": 1,
+      "owner": null
+    }
+  },
+  {
+    "model": "blog.blog",
+    "pk": 4,
+    "fields": {
+      "title": "пост №4",
+      "slug": "post-4",
+      "content": "текст поста №4",
+      "preview": "photo/blog/об2_wxkd5jH.jpeg",
+      "created_date": "2024-09-02T18:34:30.213Z",
+      "published": true,
+      "views_counter": 0,
+      "owner": null
+    }
+  },
+  {
+    "model": "blog.blog",
+    "pk": 5,
+    "fields": {
+      "title": "пост №5",
+      "slug": "post-5",
+      "content": "текст поста №5",
+      "preview": "photo/blog/347px-Macaca_nigra_self-portrait_large_hJOTWtl.jpg",
+      "created_date": "2024-09-02T18:34:49.544Z",
+      "published": true,
+      "views_counter": 0,
+      "owner": null
+    }
+  }
+]

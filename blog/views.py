@@ -7,6 +7,8 @@ from blog.models import Blog
 from pytils.translit import slugify
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import render
+import random
 
 logger = logging.getLogger(__name__)
 

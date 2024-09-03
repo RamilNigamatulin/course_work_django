@@ -1,0 +1,26 @@
+{% extends 'mailing/home.html' %}
+{% block content %}
+
+<h2>Результаты рассылки</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Рассылка</th>
+            <th>Дата и время попытки</th>
+            <th>Статус</th>
+            <th>Ответ сервера</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for attempt in attempts %}
+        <tr>
+            <td>{{ attempt.mailing }}</td>
+            <td>{{ attempt.attempt_time }}</td>
+            <td>{{ attempt.status }}</td>
+            <td>{{ attempt.server_response }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -9,6 +9,7 @@
                 <p class="card-text">Название блога: {{ object.title }}</p>
                 <p class="card-text">Содержимое блога: {{ object.content}}</p>
                 <p class="btn">Просмотры: {{ object.views_counter }}.</p>
+                <p class="btn">Дата создания: {{ object.created_date }}.</p>
             </div>
             <div class="btn-group">
                 <a class="btn btn-primary" href="{% url 'blog:list' %}" role="button">Назад</a>

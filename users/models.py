@@ -9,7 +9,6 @@ class User(AbstractUser):
         unique=True,
         verbose_name='Email',
     )
-
     avatar = models.ImageField(
         blank=True,
         null=True,
