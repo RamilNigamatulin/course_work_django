@@ -1,4 +1,9 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.mail import send_mail
+from django.conf import settings
+from users.models import User
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -33,6 +38,12 @@ class Client(models.Model):
         verbose_name='Комментарий',
         help_text='Введите комментарий',
     )
+    owner = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.SET_NULL,
+        **NULLABLE,
+    )
 
     class Meta:
         verbose_name = 'Клиент'
@@ -45,17 +56,19 @@ class Client(models.Model):
 class Mailing(models.Model):
     """настройка рассылки сообщений"""
 
-    start_date = models.DateTimeField(
-        verbose_name='Дата и время первой отправки рассылки',
-        help_text='Введите дату и время первой отправки рассылки',
+    mailing_name = models.CharField(
+        **NULLABLE,
+        max_length=100,
+        verbose_name='Название рассылки',
+        help_text='Введите название рассылки',
     )
     periodicity = models.CharField(
-        verbose_name='Периодичность рассылки(раз в день, раз в неделю, раз в месяц)',
+        verbose_name='Периодичность рассылки',
         help_text='Выберите периодичность рассылки',
         choices=[
-            ('daily', 'Ежедневно'),
-            ('weekly', 'Еженедельно'),
-            ('monthly', 'Ежемесячно'),
+            ('60', 'Ежеминутно'),
+            ('300', 'Каждые пять минут'),
+            ('600', 'Каждые 10 минут'),
         ],
         max_length=50,
     )
@@ -69,13 +82,25 @@ class Mailing(models.Model):
         ],
         max_length=50,
     )
+    owner = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.SET_NULL,
+        **NULLABLE,
+    )
 
     class Meta:
         verbose_name = 'Рассылка'
         verbose_name_plural = 'Рассылки'
+        permissions = [
+            ('can_view_mailing', 'Могу просматривать любые рассылки'),
+            ('can_view_users', 'Могу просматривать список пользователей'),
+            ('can_block_users', 'Могу блокировать пользователей'),
+            ('can_disable_mailings', 'Могу отключать рассылки'),
+        ]
 
     def __str__(self):
-        return f'{self.start_date}, {self.periodicity}, {self.status}'
+        return f'{self.mailing_name}, {self.periodicity}, {self.status}'
 
 
 class Message(models.Model):
@@ -90,11 +115,10 @@ class Message(models.Model):
        verbose_name='Текст письма',
        help_text='Введите текст письма',
     )
-    message = models.ForeignKey(
+    mailing = models.ForeignKey(
         Mailing,
         on_delete=models.CASCADE,
         verbose_name='Рассылка',
-        help_text='Выберите статус рассылки',
         **NULLABLE,
     )
     clients = models.ManyToManyField(
@@ -102,13 +126,19 @@ class Message(models.Model):
         verbose_name='Клиенты',
         help_text='Выберите клиентов для рассылки',
     )
+    owner = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.SET_NULL,
+        **NULLABLE,
+    )
 
     class Meta:
         verbose_name = 'Сообщение'
         verbose_name_plural = 'Сообщения'
 
     def __str__(self):
-        return f'{self.letter_subject}, {self.text_letter}, {self.message}, {self.clients}'
+        return f'{self.letter_subject}, {self.text_letter}, {self.clients}'
 
 
 class Attempt(models.Model):
@@ -132,11 +162,9 @@ class Attempt(models.Model):
             ('failure', 'Неуспешно')
         ],
         verbose_name='Статус попытки',
-        help_text='Выберите статус попытки',
     )
     server_response = models.TextField(
-        blank=True,
-        null=True,
+        **NULLABLE,
         verbose_name='Ответ почтового сервера',
         help_text='Ответ почтового сервера, если он был',
     )
@@ -147,3 +175,31 @@ class Attempt(models.Model):
 
     def __str__(self):
         return f'Попытка {self.attempt_time} - {self.status}'
+
+
+
+@receiver(post_save, sender=Mailing)
+def send_mailing_emails(sender, instance, **kwargs):
+    if instance.status == 'created' or instance.status == 'updated':
+        messages = Message.objects.filter(mailing=instance)
+        for message in messages:
+            for client in message.clients.all():
+                try:
+                    send_mail(
+                        subject=message.letter_subject,
+                        message=message.text_letter,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[client.contact_email],
+                        fail_silently=False,
+                    )
+                    Attempt.objects.create(
+                        mailing=instance,
+                        status='success',
+                        server_response='200 OK'
+                    )
+                except Exception as e:
+                    Attempt.objects.create(
+                        mailing=instance,
+                        status='failure',
+                        server_response=str(e)
+                    )

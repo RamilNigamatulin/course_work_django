@@ -77,7 +77,7 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     model = User
     template_name = 'users/user_redact.html'
     form_class = UserProfileForm
-    success_url = reverse_lazy('users:profile')
+    success_url = reverse_lazy('mailing:message_list')
 
     def get_object(self, queryset=None):
         return self.request.user

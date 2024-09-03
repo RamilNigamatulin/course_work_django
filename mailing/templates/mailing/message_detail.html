@@ -7,6 +7,9 @@
         </div>
         <div class="card-body">
             <h1 class="card-title pricing-card-title">{{ message.text_letter }}</h1>
+            <h1 class="card-title pricing-card-title">{{ message.mailing }}</h1>
+            <h1 class="card-title pricing-card-title">{{ message.clients }}</h1>
+            <h1 class="card-title pricing-card-title">{{ message.owner }}</h1>
             <ul class="list-unstyled mt-3 mb-4"></ul>
             <a class="btn btn-lg btn-block btn-outline-primary" href="#">Выбрать</a>
             <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'mailing:message_list' %}">Назад</a>

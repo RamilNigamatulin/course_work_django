@@ -1,0 +1,20 @@
+{% extends 'mailing/home.html' %}
+{% block content %}
+<div class="col">
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header">
+            <h4 class="my-0 font-weight-normal">{{ mailing.mailing_name }}</h4>
+        </div>
+        <div class="card-body">
+            <h1 class="card-title pricing-card-title">{{ mailing.periodicity }}</h1>
+            <h1 class="card-title pricing-card-title">{{ mailing.status }}</h1>
+            <h1 class="card-title pricing-card-title">{{ mailing.owner }}</h1>
+            <ul class="list-unstyled mt-3 mb-4"></ul>
+            <a class="btn btn-lg btn-block btn-outline-primary" href="#">Выбрать</a>
+            <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'mailing:mailing_list' %}">Назад</a>
+            <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'mailing:mailing_update' object.pk%}">Редактировать</a>
+            <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'mailing:mailing_confirm_delete' object.pk%}">Удалить</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
