@@ -5,7 +5,7 @@
     <ul>
         {% for user in users %}
             <li>{{ user.email }} -
-                <a href="{% url 'users:toggle_active_user' user.pk %}">{% if user.is_active %}Deactivate{% else %}Activate{% endif %}</a>
+                <a href="{% url 'users:toggle_active_user' user.pk %}">{% if user.is_active %}Деактивировать{% else %}Активировать{% endif %}</a>
             </li>
         {% endfor %}
     </ul>

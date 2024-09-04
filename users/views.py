@@ -1,5 +1,6 @@
 import secrets
 
+from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic import CreateView, FormView, UpdateView, ListView
 from users.models import User
 from users.forms import UserRegisterForm, PasswordResetForm, UserProfileForm
@@ -83,23 +84,6 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
 
-class ToggleActiveUserView(UserPassesTestMixin, UpdateView):
-    model = User
-    fields = ()
-    template_name = 'users/toggle_active_user.html'
-    success_url = reverse_lazy('users:manage_users')
-
-    def test_func(self):
-        return self.request.user.groups.filter(name='manager').exists()
-
-    def form_valid(self, form):
-        user = self.get_object()
-        if not user.is_superuser:
-            user.is_active = not user.is_active
-            user.save()
-        return super().form_valid(form)
-
-
 class ManageUsersView(UserPassesTestMixin, ListView):
     model = User
     template_name = 'users/manage_users.html'
@@ -110,3 +94,23 @@ class ManageUsersView(UserPassesTestMixin, ListView):
 
     def get_queryset(self):
         return User.objects.exclude(is_superuser=True)
+
+
+class ToggleActiveUserView(UserPassesTestMixin, UpdateView):
+    model = User
+    fields = []
+    template_name = 'users/toggle_active_user.html'
+    success_url = reverse_lazy('users:manage_users')
+
+    def test_func(self):
+         return self.request.user.groups.filter(name='manager').exists()
+
+    def form_valid(self, form):
+        pk = self.kwargs.get('pk')
+        user_item = get_object_or_404(User, pk=pk)
+        if user_item.is_active:
+            user_item.is_active = False
+        else:
+            user_item.is_active = True
+        user_item.save()
+        return super().form_valid(form)
