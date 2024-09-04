@@ -106,11 +106,10 @@ class ToggleActiveUserView(UserPassesTestMixin, UpdateView):
          return self.request.user.groups.filter(name='manager').exists()
 
     def form_valid(self, form):
-        pk = self.kwargs.get('pk')
-        user_item = get_object_or_404(User, pk=pk)
-        if user_item.is_active:
-            user_item.is_active = False
+        user = form.save()
+        if user.is_active:
+            user.is_active = False
         else:
-            user_item.is_active = True
-        user_item.save()
+            user.is_active = True
+        user.save()
         return super().form_valid(form)
