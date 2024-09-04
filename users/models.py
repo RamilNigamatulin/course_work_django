@@ -52,5 +52,9 @@ class User(AbstractUser):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
+        permissions = [
+            ("can_toggle_activity", "Can toggle user activity"),
+        ]
+
     def __str__(self):
         return self.email
